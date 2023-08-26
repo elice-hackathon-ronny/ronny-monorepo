@@ -5,9 +5,9 @@ from google.cloud import secretmanager
 load_dotenv(find_dotenv('.env'))
 
 
-def get_gcp_secret(key: str) -> str:
+def get_gcp_secret(key: str, version: str = "1") -> str:
     client = secretmanager.SecretManagerServiceClient()
-    name = f"projects/elice-hackathon/secrets/{key}/versions/1"
+    name = f"projects/elice-hackathon/secrets/{key}/versions/{version}"
     response = client.access_secret_version(request={"name": name})
     payload = response.payload.data.decode("UTF-8")
     return payload
@@ -30,4 +30,4 @@ def open_ai_api_key() -> str:
     if env_value:
         return env_value
 
-    return get_gcp_secret("OPEN_AI_API_KEY")
+    return get_gcp_secret("OPEN_AI_API_KEY", version="2")

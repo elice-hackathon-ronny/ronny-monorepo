@@ -9,7 +9,7 @@ def mongo_db_url() -> str:
 
 
 def mongo_db_database() -> str:
-    return environ.get("MONGO_DB_DATABASE")
+    return "database"
 
 
 OPEN_AI_API_KEY = environ.get("OPEN_AI_API_KEY")

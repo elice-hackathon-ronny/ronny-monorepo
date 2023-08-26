@@ -1,12 +1,13 @@
 import uvicorn
 from fastapi import FastAPI
-from src.routes import user, debate
+from src.routes import user, debate, debug
 from src.repository.mongo import database
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 app.include_router(user.router)
 app.include_router(debate.router)
+app.include_router(debug.router)
 
 
 origins = [

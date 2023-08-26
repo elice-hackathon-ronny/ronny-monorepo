@@ -25,6 +25,7 @@ jobs:
         env:
           OPEN_AI_API_KEY: ${{ secrets.OPEN_AI_API_KEY }}
           MONGO_DB_URL: ${{ secrets.MONGO_DB_URL }}
+          MONGO_DB_DATABASE: ${{ secrets.MONGO_DB_DATABASE }}
         with:
           app_yaml_path: "app.yaml"
 

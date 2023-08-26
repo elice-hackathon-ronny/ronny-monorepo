@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main # Change this to your main branch name
+        june/test_secret
 
 jobs:
   deploy:
@@ -24,6 +25,10 @@ jobs:
         uses: 73h/gae-app-yaml-replace-env-variables@v0.3
         env:
           OPEN_AI_API_KEY: ${{ secrets.OPEN_AI_API_KEY }}
+          MONGO_DB_USER: ronny-admin
+          MONGO_DB_PASSWORD: yRdcpABIyFKE0UKw
+          MONGO_DB_DATABASE: database
+          MONGO_DB_URL: mongodb+srv://ronny-admin:yRdcpABIyFKE0UKw@ronny-database.xaxm6tm.mongodb.net/?retryWrites=true&w=majority
         with:
           app_yaml_path: "app.yaml"
 

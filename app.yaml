@@ -3,3 +3,9 @@ runtime: python311 # or another supported version
 instance_class: F2
 
 entrypoint: uvicorn src.main:app --host 0.0.0.0 --port 80
+
+env_variables:
+  - MONGO_DB_USER: 'ronny-admin'
+  - MONGO_DB_PASSWORD: 'yRdcpABIyFKE0UKw'
+  - MONGO_DB_DATABASE: 'database'
+  - MONGO_DB_URL: 'mongodb+srv://ronny-admin:${MONGO_DB_PASSWORD}@ronny-database.xaxm6tm.mongodb.net/?retryWrites=true&w=majority'

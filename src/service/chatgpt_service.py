@@ -29,8 +29,11 @@ def get_test_summary(debate : Debate, history : List[DebateMessage]):
         "user_summary":"user_summary_data"
     }
 
+
 # 모델 - GPT 3.5 Turbo 선택
-model = "gpt-3.5-turbo"
+# model = "gpt-3.5-turbo"
+model = "gpt-4"
+
 
 def first_call(DEBATE_TOPIC, USER_POSITION, RONNY_POSITION, DEBATE_LEVEL):
     print("========== 사회자: 로니 측 입론 ==========")

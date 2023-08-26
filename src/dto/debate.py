@@ -11,20 +11,29 @@ class DebateForm(BaseModel):
     level: str
     position : str
 
-class DebateMessageForm(BaseModel):
+class DebateMessagePairForm(BaseModel):
     counter: Optional[str] = None
     arg : str
 
-class DebateMessageResponse(BaseModel):
+# class DebateMessageResponse(BaseModel):
+#     message: str
+#     message_type: str
+#     author : str
+#     created_at: datetime
+
+# class DebateResponse(BaseModel):
+#     id : str
+#     subject : str
+#     level : str
+#     position : str
+#     created_at : datetime
+#     messages: List[DebateMessageResponse]
+
+class SingleDebateMessage(BaseModel):
     message: str
     message_type: str
     author : str
-    created_at: datetime
 
-class DebateResponse(BaseModel):
-    id : str
-    subject : str
-    level : str
-    position : str
-    created_at : datetime
-    messages: List[DebateMessageResponse]
+class SimpleDebateMessageForm(BaseModel):
+    message : str
+    message_type : str

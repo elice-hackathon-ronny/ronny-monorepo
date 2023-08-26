@@ -24,8 +24,9 @@ def get_test_summary(debate : Debate, history : List[DebateMessage]):
     
     
     return {
-        "요약":
-        ""
+        "eval":"평가입니다",
+        "ai_summary":"ai_summary_data",
+        "user_summary":"user_summary_data"
     }
 
 # 모델 - GPT 3.5 Turbo 선택
@@ -310,3 +311,92 @@ def get_new_message(debate: Debate, history: List[DebateMessage], end=False):
             history, DEBATE_TOPIC, USER_POSITION, RONNY_POSITION, DEBATE_LEVEL
         )
         return answer
+    
+
+
+def summarize(history, DEBATE_TOPIC, USER_POSITION, RONNY_POSITION):
+
+    user_argument_list, user_counter_argument_list, ronny_argument_list, ronny_counter_argument_list = [], [], [], []
+    for debate_message in history:
+        if debate_message['author'] == 'user':
+            if debate_message['message_type'] == 'arg':
+                user_argument_list.append(debate_message['message'])
+            elif debate_message['message_type'] == 'counter':
+                user_counter_argument_list.append(debate_message['message'])
+            else:
+                print("debate_message.message_type ERROR")
+        elif debate_message['author'] == 'assistant':
+            if debate_message['message_type'] == 'arg':
+                ronny_argument_list.append(debate_message['message'])
+            elif debate_message['message_type'] == 'counter':
+                ronny_counter_argument_list.append(debate_message['message'])
+            else:
+                print("debate_message.message_type ERROR")
+        else:
+            print("debate_message.author ERROR")
+
+    user_conclusion = user_argument_list.pop()
+    ronny_conclusion = ronny_argument_list.pop()
+    
+    # system_role
+    system_roles = ['당신은 유능한 요약 프롬프트 생성 로봇입니다.',
+                    '당신은 서로 다른 두 사람 간의 토론 내용을 보고, 찬성측과 반대측이 주장하는 내용들을 각각 요약해야 합니다.'
+                    f'토론은 {RONNY_POSITION}측의 "입론", {RONNY_POSITION}측의 입론에 대한 {USER_POSITION}측의 반론, {USER_POSITION}측의 입론, 사용자의 입론에 대한 {RONNY_POSITION}측의 반론, {RONNY_POSITION}측의 새로운 입론, {RONNY_POSITION}측의 새로운 입론에 대한 {USER_POSITION}측의 새로운 반론, {USER_POSITION}측의 새로운 입론, ... 순으로 이루어집니다.',
+                    f'토론의 주제는 "{DEBATE_TOPIC}"입니다.',
+                    f'이제부터 {RONNY_POSITION}측과 {USER_POSITION}측의 입론 및 반론을 알려드리겠습니다.',
+                    ]
+    system_messages = [{"role": "system", "content": role} for role in system_roles]
+
+
+    total_messages = []
+    for i in range(len(ronny_counter_argument_list)):
+        total_messages.append({"role": "system", "content": f"{RONNY_POSITION}측 입론: {ronny_argument_list[i]}"})
+        total_messages.append({"role": "system", "content": f"{USER_POSITION}측 반론: {user_counter_argument_list[i]}"})
+        total_messages.append({"role": "system", "content": f"{USER_POSITION}측 입론: {user_argument_list[i]}"})
+        total_messages.append({"role": "system", "content": f"{RONNY_POSITION}측 반론: {ronny_counter_argument_list[i]}"})
+    total_messages.append({"role": "system", "content": f"{RONNY_POSITION}측 입론: {ronny_argument_list[-1]}"})
+    total_messages.append({"role": "system", "content": f"{USER_POSITION}측 반론: {user_counter_argument_list[-1]}"})
+    total_messages.append({"role": "system", "content": f"{USER_POSITION}측 최종 결론: {user_conclusion}"})
+    total_messages.append({"role": "system", "content": f"{RONNY_POSITION}측 최종 결론: {ronny_conclusion}"})
+    system_messages.extend(total_messages)    
+    
+    # Ronny 측 주장 요약
+    messages = system_messages.copy()
+    messages.append({"role": "user", "content": f'여태까지의 토론 내용을 바탕으로, {RONNY_POSITION} 측의 주장을 200자 이내로 요약하세요.'})
+    response = openai.ChatCompletion.create(
+        model=model, messages=messages
+    )
+    ronny_summarization = response["choices"][0]["message"]["content"]
+
+    # User 측 주장 요약
+    messages = system_messages.copy()
+    messages.append({"role": "user", "content": f'여태까지의 토론 내용을 바탕으로, {USER_POSITION} 측의 주장을 200자 이내로 요약하세요.'})
+    response = openai.ChatCompletion.create(
+        model=model, messages=messages
+    )
+    user_summarization = response["choices"][0]["message"]["content"]
+
+    # User 측 종합 평가
+    messages = system_messages.copy()
+    messages.append({"role": "user", "content": f'여태까지의 토론 내용을 바탕으로, {USER_POSITION} 측의 주장을 250자에서 300자 사이로 종합적으로 평가하세요. (일관성, 논리성 측면)'})
+    response = openai.ChatCompletion.create(
+        model=model, messages=messages
+    )
+    user_report = response["choices"][0]["message"]["content"]
+
+    return ronny_summarization, user_summarization, user_report
+
+
+def get_summary(debate:Debate, history : List[DebateMessage]):
+    DEBATE_TOPIC = debate['subject'] # "안락사는 합법화되어야 한다."
+    USER_POSITION = "찬성" if debate['position']=='agree' else "반대"
+    RONNY_POSITION = "반대" if USER_POSITION=="찬성" else "찬성"
+
+    ronny_summarization, user_summarization, user_report = summarize(history, DEBATE_TOPIC, USER_POSITION, RONNY_POSITION)
+
+    report_dict = {}
+    report_dict["ronny_summarization"] = ronny_summarization
+    report_dict["user_summarization"] = user_summarization
+    report_dict["user_report"] = user_report
+
+    return report_dict

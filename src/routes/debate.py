@@ -40,9 +40,10 @@ def conclude_debate(debate_id)->SingleDebateMessage:
 def conclude_debate_with(debate_id: str, form : SimpleDebateMessageForm) -> SingleDebateMessage:
     return debate_service.end_debate_with(debate_id,form)
 
-@router.get("/{debate_id}/summary")
-def get_debate_summary(debate_id : str) -> str :
-    return parse_json(debate_service.get_debate_summary(debate_id))
+@router.get("/{debate_id}/summary", responses=response_example.continue_debate_example())
+def get_debate_summary(debate_id : str) -> Dict :
+    
+    return debate_service.get_debate_summary(debate_id)
 
 def parse_json(data):
     return json.loads(json_util.dumps(data))

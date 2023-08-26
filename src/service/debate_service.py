@@ -5,7 +5,7 @@ from src.repository.mongo import database
 from src.dto.debate import DebateForm, DebateMessagePairForm, SingleDebateMessage, SimpleDebateMessageForm
 import src.service.debate_mapper as debate_mapper
 import src.service.chatgpt_service as chatgpt_service
-from typing import Any
+from typing import Any, Dict
 from bson.objectid import ObjectId
 from bson import json_util
 
@@ -172,7 +172,7 @@ def get_debate(debate_id:str) -> Debate :
     return debates.find_one(query_filter)
 
 
-def get_debate_summary(debate_id:str) -> str :
+def get_debate_summary(debate_id:str) -> Dict :
     
     debates = database.get_debates()
     # https://www.mongodb.com/docs/manual/tutorial/query-embedded-documents/
@@ -186,6 +186,6 @@ def get_debate_summary(debate_id:str) -> str :
             detail="debate not found"
         )
     
-    new_message = chatgpt_service.get_new_message(debate, debate['messages'],end=True)
+    new_message = chatgpt_service.get_summary(debate, debate['messages'])
 
     return new_message

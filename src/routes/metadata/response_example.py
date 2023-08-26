@@ -49,3 +49,20 @@ def end_debate_example() :
             }
         }
     }} 
+
+def get_debate_summary_example() : 
+    return {
+    200: {
+        "description": "debate summary",
+        "content": {
+            "application/json": {
+                "example": 
+                        {
+                            "ai_summary": "this is ai_summary",
+                            "user_summary" : "this is user_summary",
+                            "evaluation":"this is final evaluation"
+                        }
+                
+            }
+        }
+    }} 

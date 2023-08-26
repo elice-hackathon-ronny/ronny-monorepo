@@ -21,6 +21,7 @@ app.add_middleware(
     allow_headers=["*"],	# 허용할 http header 목록을 설정할 수 있으며 Content-Type, Accept, Accept-Language, Content-Language은 항상 허용된다.
 )
 
+
 @app.on_event("startup")
 def connect_mongodb():
     database.connect()

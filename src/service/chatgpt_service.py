@@ -398,8 +398,8 @@ def get_summary(debate:Debate, history : List[DebateMessage]):
     ronny_summarization, user_summarization, user_report = summarize(history, DEBATE_TOPIC, USER_POSITION, RONNY_POSITION)
 
     report_dict = {}
-    report_dict["ronny_summarization"] = ronny_summarization
-    report_dict["user_summarization"] = user_summarization
-    report_dict["user_report"] = user_report
+    report_dict["ronny_summary"] = ronny_summarization
+    report_dict["user_summary"] = user_summarization
+    report_dict["eval"] = user_report
 
     return report_dict

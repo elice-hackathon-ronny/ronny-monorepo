@@ -40,7 +40,7 @@ def conclude_debate(debate_id)->SingleDebateMessage:
 def conclude_debate_with(debate_id: str, form : SimpleDebateMessageForm) -> SingleDebateMessage:
     return debate_service.end_debate_with(debate_id,form)
 
-@router.get("/{debate_id}/summary", responses=response_example.continue_debate_example())
+@router.get("/{debate_id}/summary", responses=response_example.get_debate_summary_example())
 def get_debate_summary(debate_id : str) -> Dict :
     
     return debate_service.get_debate_summary(debate_id)

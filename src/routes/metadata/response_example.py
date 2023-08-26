@@ -58,9 +58,9 @@ def get_debate_summary_example() :
             "application/json": {
                 "example": 
                         {
-                            "ai_summary": "this is ai_summary",
+                            "ronny_summary": "this is ai_summary",
                             "user_summary" : "this is user_summary",
-                            "evaluation":"this is final evaluation"
+                            "eval":"this is final evaluation"
                         }
                 
             }

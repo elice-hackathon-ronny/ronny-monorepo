@@ -4,6 +4,7 @@ from src.routes import user, debate, debug
 from src.repository.mongo import database
 from fastapi.middleware.cors import CORSMiddleware
 
+
 app = FastAPI()
 app.include_router(user.router)
 app.include_router(debate.router)

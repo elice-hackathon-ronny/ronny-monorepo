@@ -2,12 +2,11 @@ from src.dto.debate import DebateMessagePairForm, SingleDebateMessage
 from src.model.debate import DebateMessage, Debate
 from typing import List
 import openai
+from src.env import open_ai_api_key
 
 
-# 발급받은 API 키 설정
-OPENAI_API_KEY = "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"
 # openai API 키 인증
-openai.api_key = OPENAI_API_KEY
+openai.api_key = open_ai_api_key()
 
 def get_test_new_message(debate: Debate, history : List[DebateMessage], end=False)-> str:
 

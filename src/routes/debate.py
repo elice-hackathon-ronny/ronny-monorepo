@@ -23,20 +23,20 @@ def get_debate(debate_id: str) -> Any:
     return parse_json(debate_service.get_debate(debate_id))
 
 
-@router.post("/{debate_id}/message", responses= response_example.continue_debate_example())
+@router.post("/{debate_id}/message")
 def add_debate(debate_id: str, form : SimpleDebateMessageForm) -> bool:
     return debate_service.add_debate(debate_id,form)
 
-@router.get("/{debate_id}/message")
+@router.get("/{debate_id}/message", responses= response_example.continue_debate_example())
 def get_debate_message(debate_id: str) -> SingleDebateMessage:
     return debate_service.get_debate_message(debate_id)
 
 
 @router.get("/{debate_id}/conclusion")
-def conclude_debate(debate_id):
+def conclude_debate(debate_id)->SingleDebateMessage:
     return debate_service.end_debate(debate_id)
 
-@router.post("/{debate_id}/conclusion", responses = response_example.end_debate_example())
+# @router.post("/{debate_id}/conclusion", responses = response_example.end_debate_example())
 def conclude_debate_with(debate_id: str, form : SimpleDebateMessageForm) -> SingleDebateMessage:
     return debate_service.end_debate_with(debate_id,form)
 

@@ -130,12 +130,12 @@ def end_debate_with(debate_id : str, form: SimpleDebateMessageForm)-> SingleDeba
     
     return new_debate_message
 
-def end_debate(debate_id : str):
+def end_debate(debate_id : str)->SingleDebateMessage:
     debates = database.get_debates()
 
     # https://www.mongodb.com/docs/manual/tutorial/query-embedded-documents/
     query_filter = {'_id': ObjectId(debate_id)}
-    
+
     debate = debates.find_one(query_filter)
     if debate is None :
         raise HTTPException(

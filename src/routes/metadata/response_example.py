@@ -7,6 +7,11 @@ def start_debate_example() :
                 "example": 
                     {
                         "debate_id": "64ea133ab146c72a4c61ba15",
+                        "message" : {
+                            "message":"메시지 내용",
+                            "message_type":"arg",
+                            "author":"assistant",
+                        }
                     }
             }
         }
@@ -20,8 +25,9 @@ def continue_debate_example() :
             "application/json": {
                 "example": 
                     {
-                            "counter": "사용자의 입론 '유저 입론입니다'에 대한 gpt 반론입니다",
-                            "arg": "gpt 입론입니다"
+                            "message": "사용자의 입론 '유저 입론입니다'에 대한 gpt 반론입니다",
+                            "message_type": "counter",
+                            "author":"assistant"
                         }
                 
             }

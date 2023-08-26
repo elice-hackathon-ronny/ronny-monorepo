@@ -24,26 +24,35 @@ def make_debate(
 
 def make_debate_messages(
         form: DebateMessageForm,
-        by_user = True
+        by_user = True,
+        end = False
 ) -> List[Dict]:
     
     timestamp= datetime.now()
     author = "user" if by_user else "assistant"
+    
 
     results = [
         DebateMessage(
-            message=form.counter,
-            message_type = "counter",
-            author = author,
-            created_at = timestamp
-        ).model_dump(),
-        DebateMessage(
-            message=form.arg,
-            message_type = "arg",
-            author = author,
-            created_at = timestamp
-        ).model_dump(),
+                message=form.arg,
+                message_type = "arg",
+                author = author,
+                created_at = timestamp
+            ).model_dump(),
     ]
+    
+    if not end :
+        results.insert(
+            0, 
+            DebateMessage(
+                message=form.counter,
+                message_type = "counter",
+                author = author,
+                created_at = timestamp
+            ).model_dump()
+        )
+            
+
 
     return results
 

@@ -31,5 +31,9 @@ def continue_debate(debate_id: str, form : DebateMessageForm) -> Any:
 def continue_debate(debate_id: str, form : DebateMessageForm) -> Any:
     return debate_service.end_debate(debate_id,form)
 
+@router.get("/{debate_id}/summary")
+def get_debate_summary(debate_id : str) -> Any :
+    return parse_json(debate_service.get_debate_summary(debate_id))
+
 def parse_json(data):
     return json.loads(json_util.dumps(data))

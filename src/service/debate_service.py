@@ -23,12 +23,20 @@ def continue_debate(debate_id : str, form: DebateMessageForm) -> DebateMessageFo
 
 
     # list(debates.find(query_filter, sort="asdf"))
-    
-    new_message = chatgpt_service.get_new_message(form)
-
 
     new_value = { '$push': { 'messages': { '$each': debate_mapper.make_debate_messages(form) } } }
     update_result1 = debates.update_one(query_filter, new_value)
+
+
+    debate = debates.find_one(query_filter)
+    if debate is None :
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="debate not found"
+        )
+    
+    new_message = chatgpt_service.get_new_message(debate, debate['messages'])
+
 
     new_value = { '$push': { 'messages': { '$each': debate_mapper.make_debate_messages(new_message, by_user=False) } } }
     update_result2 = debates.update_one(query_filter, new_value)
@@ -46,12 +54,20 @@ def end_debate(debate_id : str, form: DebateMessageForm)-> DebateMessageForm:
     query_filter = {'_id': ObjectId(debate_id)}
 
 
-
-    new_message = chatgpt_service.get_end_message(form)
-
-    new_value = { '$push': { 'messages': { '$each': debate_mapper.make_debate_messages(form) } } }
+    new_value = { '$push': { 'messages': { '$each': debate_mapper.make_debate_messages(form, end=True) } } }
     update_result1 = debates.update_one(query_filter, new_value)
     
+
+    debate = debates.find_one(query_filter)
+    if debate is None :
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="debate not found"
+        )
+
+    new_message = chatgpt_service.get_end_message(debate, debate.messages)
+
+
     if not update_result1.acknowledged():
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -79,4 +95,15 @@ def get_debate(debate_id:str) -> Debate :
     return debates.find_one(query_filter)
 
 
-
+def get_debate_summary(debate_id:str) -> Debate :
+    
+    debates = database.get_debates()
+    # https://www.mongodb.com/docs/manual/tutorial/query-embedded-documents/
+    
+    query_filter = {'_id': ObjectId(debate_id)}
+    
+    debate = debates.find_one(query_filter)
+    if  debates.find_one is None :
+        pass
+    print(debate)
+    return debate

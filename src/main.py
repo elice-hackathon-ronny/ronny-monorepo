@@ -11,7 +11,8 @@ app.include_router(debug.router)
 
 
 origins = [
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "*"
 ]
 
 app.add_middleware(

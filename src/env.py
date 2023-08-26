@@ -7,19 +7,10 @@ load_dotenv(find_dotenv('.env'))
 
 def get_gcp_secret(key: str) -> str:
     client = secretmanager.SecretManagerServiceClient()
-    name = client.secret_path("elice-hackathon", key)
-    response = client.get_secret(request={"name": name})
-
-    # Get the replication policy.
-    if "automatic" in response.replication:
-        pass
-    elif "user_managed" in response.replication:
-        pass
-    else:
-        raise Exception(f"Unknown replication {response.replication}")
-
-    # Print data about the secret.
-    return response.name
+    name = f"projects/elice-hackathon/secrets/{key}/versions/1"
+    response = client.access_secret_version(request={"name": name})
+    payload = response.payload.data.decode("UTF-8")
+    return payload
 
 
 def mongo_db_url() -> str:

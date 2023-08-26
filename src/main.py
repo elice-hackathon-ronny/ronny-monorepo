@@ -1,12 +1,12 @@
 import uvicorn
 from fastapi import FastAPI
-from src.routes import user
+from src.routes import user, debate
 from src.repository.mongo import database
 
 
 app = FastAPI()
 app.include_router(user.router)
-
+app.include_router(debate.router)
 
 @app.on_event("startup")
 def connect_mongodb():

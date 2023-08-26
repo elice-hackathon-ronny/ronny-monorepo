@@ -349,39 +349,50 @@ def summarize(history, DEBATE_TOPIC, USER_POSITION, RONNY_POSITION):
                     f'이제부터 {RONNY_POSITION}측과 {USER_POSITION}측의 입론 및 반론을 알려드리겠습니다.',
                     ]
     system_messages = [{"role": "system", "content": role} for role in system_roles]
-
-
+    
+    # Ronny 측 주장 요약
     total_messages = []
     for i in range(len(ronny_counter_argument_list)):
         total_messages.append({"role": "system", "content": f"{RONNY_POSITION}측 입론: {ronny_argument_list[i]}"})
-        total_messages.append({"role": "system", "content": f"{USER_POSITION}측 반론: {user_counter_argument_list[i]}"})
-        total_messages.append({"role": "system", "content": f"{USER_POSITION}측 입론: {user_argument_list[i]}"})
+        # total_messages.append({"role": "system", "content": f"{USER_POSITION}측 반론: {user_counter_argument_list[i]}"})
+        # total_messages.append({"role": "system", "content": f"{USER_POSITION}측 입론: {user_argument_list[i]}"})
         total_messages.append({"role": "system", "content": f"{RONNY_POSITION}측 반론: {ronny_counter_argument_list[i]}"})
     total_messages.append({"role": "system", "content": f"{RONNY_POSITION}측 입론: {ronny_argument_list[-1]}"})
-    total_messages.append({"role": "system", "content": f"{USER_POSITION}측 반론: {user_counter_argument_list[-1]}"})
-    total_messages.append({"role": "system", "content": f"{USER_POSITION}측 최종 결론: {user_conclusion}"})
+    # total_messages.append({"role": "system", "content": f"{USER_POSITION}측 반론: {user_counter_argument_list[-1]}"})
+    # total_messages.append({"role": "system", "content": f"{USER_POSITION}측 최종 결론: {user_conclusion}"})
     total_messages.append({"role": "system", "content": f"{RONNY_POSITION}측 최종 결론: {ronny_conclusion}"})
-    system_messages.extend(total_messages)    
-    
-    # Ronny 측 주장 요약
+    system_messages.extend(total_messages)
+
     messages = system_messages.copy()
-    messages.append({"role": "user", "content": f'여태까지의 토론 내용을 바탕으로, {RONNY_POSITION} 측의 주장을 200자 이내로 요약하세요.'})
+    messages.append({"role": "user", "content": f'여태까지의 토론 내용을 바탕으로, {RONNY_POSITION} 측의 주요 논거를 다시 언급하는 요약문을 200자 이내로 요약하세요.'})
     response = openai.ChatCompletion.create(
-        model=model, messages=messages
+        model=model, messages=messages, temperature=0.2
     )
     ronny_summarization = response["choices"][0]["message"]["content"]
 
     # User 측 주장 요약
+    total_messages = []
+    for i in range(len(ronny_counter_argument_list)):
+        # total_messages.append({"role": "system", "content": f"{RONNY_POSITION}측 입론: {ronny_argument_list[i]}"})
+        total_messages.append({"role": "system", "content": f"{USER_POSITION}측 반론: {user_counter_argument_list[i]}"})
+        total_messages.append({"role": "system", "content": f"{USER_POSITION}측 입론: {user_argument_list[i]}"})
+        # total_messages.append({"role": "system", "content": f"{RONNY_POSITION}측 반론: {ronny_counter_argument_list[i]}"})
+    # total_messages.append({"role": "system", "content": f"{RONNY_POSITION}측 입론: {ronny_argument_list[-1]}"})
+    total_messages.append({"role": "system", "content": f"{USER_POSITION}측 반론: {user_counter_argument_list[-1]}"})
+    total_messages.append({"role": "system", "content": f"{USER_POSITION}측 최종 결론: {user_conclusion}"})
+    # total_messages.append({"role": "system", "content": f"{RONNY_POSITION}측 최종 결론: {ronny_conclusion}"})
+    system_messages.extend(total_messages)
+
     messages = system_messages.copy()
-    messages.append({"role": "user", "content": f'여태까지의 토론 내용을 바탕으로, {USER_POSITION} 측의 주장을 200자 이내로 요약하세요.'})
+    messages.append({"role": "user", "content": f'여태까지의 토론 내용을 바탕으로, {USER_POSITION} 측의 주요 논거를 다시 언급하는 요약문을 200자 이내로 요약하세요. 단, '})
     response = openai.ChatCompletion.create(
-        model=model, messages=messages
+        model=model, messages=messages, temperature=0.2
     )
     user_summarization = response["choices"][0]["message"]["content"]
 
     # User 측 종합 평가
     messages = system_messages.copy()
-    messages.append({"role": "user", "content": f'여태까지의 토론 내용을 바탕으로, {USER_POSITION} 측의 주장을 250자에서 300자 사이로 종합적으로 평가하세요. (일관성, 논리성 측면)'})
+    messages.append({"role": "user", "content": f'여태까지의 토론 내용을 바탕으로, {USER_POSITION} 측의 주장을 300자 이내로 종합적으로 평가하세요. (일관성, 논리성 측면)'})
     response = openai.ChatCompletion.create(
         model=model, messages=messages
     )

@@ -13,7 +13,7 @@ from src.routes.metadata import response_example
 router = APIRouter(tags=['debate'], prefix="/api/debate")
 
 
-@router.post( "", responses= response_example.start_debate_example())
+@router.post("", responses=response_example.start_debate_example())
 def start_debate(form : DebateForm = Body()) -> Dict:
     return {'debate_id':debate_service.start_debate(form)}
 

@@ -23,7 +23,7 @@ def get_debate(debate_id: str) -> Any:
     return parse_json(debate_service.get_debate(debate_id))
 
 
-@router.post("/{debate_id}", responses= response_example.continue_debate_example())
+@router.post("/{debate_id}/message", responses= response_example.continue_debate_example())
 def add_debate(debate_id: str, form : SimpleDebateMessageForm) -> bool:
     return debate_service.add_debate(debate_id,form)
 

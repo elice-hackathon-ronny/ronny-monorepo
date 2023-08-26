@@ -1,38 +1,24 @@
-
-name: deploy Google App Engine
+name: Deploy to App Engine
 
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [june/deploy]
-  pull_request:
-    branches: [june/deploy]
+    branches:
+      - main # Change this to your main branch name
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  deploy:
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-      - name: Initialize Google Cloud SDK
-        uses: zxyle/publish-gae-action@master
-        with:
-          service_account_email: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
-          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-          project_id: elice-hackathon
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Publish app to Google App Engine
-        run: |
-          # This client-secret.json is converted by GCP_SA_KEY.
-          echo ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }} >> client-secret.json
-          gcloud auth activate-service-account ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }} --key-file=client-secret.json
-          gcloud config set project elice-hackathon
-          gcloud -q app deploy app.yaml --promote
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: elice-hackathon
+          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          export_default_credentials: true
+
+      - name: Deploy to App Engine
+        run: gcloud app deploy app.yaml --quiet # Modify 'app.yaml' to your configuration file name

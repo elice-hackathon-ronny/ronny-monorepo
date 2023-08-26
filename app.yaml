@@ -9,6 +9,7 @@ env_variables:
   MONGO_DB_PASSWORD: 'yRdcpABIyFKE0UKw'
   MONGO_DB_DATABASE: 'database'
   MONGO_DB_URL: 'mongodb+srv://ronny-admin:${MONGO_DB_PASSWORD}@ronny-database.xaxm6tm.mongodb.net/?retryWrites=true&w=majority'
+  OPEN_AI_API_KEY: $OPEN_AI_API_KEY
 
 manual_scaling:
   instances: 1

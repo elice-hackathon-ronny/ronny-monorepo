@@ -8,7 +8,7 @@ from typing import List, Optional
 
 class DebateForm(BaseModel):
     subject : str
-    level: str
+    level: int
     position : str
 
 class DebateMessagePairForm(BaseModel):

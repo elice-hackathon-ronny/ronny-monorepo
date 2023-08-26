@@ -32,9 +32,13 @@ def get_debate_message(debate_id: str) -> SingleDebateMessage:
     return debate_service.get_debate_message(debate_id)
 
 
+@router.get("/{debate_id}/conclusion")
+def conclude_debate(debate_id):
+    return debate_service.end_debate(debate_id)
+
 @router.post("/{debate_id}/conclusion", responses = response_example.end_debate_example())
-def conclude_debate(debate_id: str, form : SimpleDebateMessageForm) -> SingleDebateMessage:
-    return debate_service.end_debate(debate_id,form)
+def conclude_debate_with(debate_id: str, form : SimpleDebateMessageForm) -> SingleDebateMessage:
+    return debate_service.end_debate_with(debate_id,form)
 
 @router.get("/{debate_id}/summary")
 def get_debate_summary(debate_id : str) -> str :

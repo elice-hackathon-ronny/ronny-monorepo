@@ -5,9 +5,6 @@ runtime: python311 # or another supported version
 entrypoint: uvicorn src.main:app --host 0.0.0.0 --port 8080
 
 env_variables:
-  MONGO_DB_USER: $MONGO_DB_USER
-  MONGO_DB_PASSWORD: $MONGO_DB_PASSWORD
-  MONGO_DB_DATABASE: $MONGO_DB_DATABASE
   MONGO_DB_URL: $MONGO_DB_URL
   OPEN_AI_API_KEY: $OPEN_AI_API_KEY
 

@@ -12,8 +12,4 @@ def mongo_db_database() -> str:
     return environ.get("MONGO_DB_DATABASE")
 
 
-MONGO_DB_USER = environ.get('MONGO_DB_USER')
-MONGO_DB_PASSWORD = environ.get('MONGO_DB_PASSWORD')
-MONGO_DB_DATABASE = environ.get('MONGO_DB_DATABASE')
-
 OPEN_AI_API_KEY = environ.get("OPEN_AI_API_KEY")

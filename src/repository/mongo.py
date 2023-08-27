@@ -8,6 +8,7 @@ from enum import Enum
 class CollectionEnum(Enum):
     USER = "user"
     DEBATE = "debate"
+    SUMMARY = "summary"
 
 
 class MongoDatabase:
@@ -27,4 +28,7 @@ class MongoDatabase:
     def get_debates(self) -> Collection:
         return self.db.get_collection(CollectionEnum.DEBATE.value)
 
+    def get_summaries(self) -> Collection:
+        return self.db.get_collection(CollectionEnum.SUMMARY.value)
+    
 database = MongoDatabase()

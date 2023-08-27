@@ -1,7 +1,7 @@
 from typing import List, Dict
 
 from src.dto.debate import DebateForm, DebateMessagePairForm, SingleDebateMessage,SimpleDebateMessageForm
-from src.model.debate import Debate, DebateMessage
+from src.model.debate import Debate, DebateMessage, DebateSummary
 from datetime import datetime
 import json
 from bson.objectid import ObjectId
@@ -48,6 +48,21 @@ def make_gpt_message(chat : SingleDebateMessage):
                 created_at = timestamp
             ).model_dump()
     return result
+
+def make_summary(debate_id :str, chat_summary:Dict)->DebateSummary:
+    return DebateSummary(
+        debate_id = debate_id,
+        ronny_summary = chat_summary['ronny_summary'],
+        user_summary = chat_summary['user_summary'],
+        eval = chat_summary['eval']
+    )
+
+def make_summary_response(summary : DebateSummary)->Dict :
+    return {
+        'ronny_summary' : summary.ronny_summary,
+        'user_summary' : summary.user_summary,
+        'eval' : summary.eval
+    }
 
 def encode_debate(
         debate : Debate

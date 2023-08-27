@@ -22,3 +22,8 @@ class Debate(BaseModel):
     
 
 
+class DebateSummary(BaseModel):
+    debate_id : str
+    ronny_summary : str
+    user_summary : str
+    eval : str

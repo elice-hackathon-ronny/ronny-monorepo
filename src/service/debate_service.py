@@ -1,6 +1,6 @@
 from fastapi import status, HTTPException
 from src.model.user import User
-from src.model.debate import Debate, DebateMessage
+from src.model.debate import Debate, DebateMessage, DebateSummary
 from src.repository.mongo import database
 from src.dto.debate import DebateForm, DebateMessagePairForm, SingleDebateMessage, SimpleDebateMessageForm
 import src.service.debate_mapper as debate_mapper
@@ -172,8 +172,19 @@ def get_debate(debate_id:str) -> Debate :
     return debates.find_one(query_filter)
 
 
-def get_debate_summary(debate_id:str) -> Dict :
+def get_debate_summary(debate_id:str) -> DebateSummary :
     
+
+    summaries = database.get_summaries()
+
+    summary_query_filter = {'debate_id' : debate_id}
+    saved_summary = summaries.find_one(summary_query_filter)
+    
+    if saved_summary is not None :
+        return {k: v for k, v in saved_summary.items() if k != "debate_id" and k!= '_id'}
+
+
+
     debates = database.get_debates()
     # https://www.mongodb.com/docs/manual/tutorial/query-embedded-documents/
     
@@ -186,6 +197,14 @@ def get_debate_summary(debate_id:str) -> Dict :
             detail="debate not found"
         )
     
-    new_message = chatgpt_service.get_summary(debate, debate['messages'])
+    chat_summary = chatgpt_service.get_summary(debate, debate['messages'])
 
-    return new_message
+    summary = summaries.insert_one(debate_mapper.make_summary(debate_id,chat_summary).model_dump())
+
+    if summary is None :
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="debate not found"
+        )
+    
+    return chat_summary
